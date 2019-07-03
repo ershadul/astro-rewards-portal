@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { ClipLoader } from 'react-spinners';
 
-export default class SubscriberCreate extends Component {
+export default class RedeemForm extends Component {
   constructor(props) {
     super(props);
     this.onChangeIdType = this.onChangeIdType.bind(this);
@@ -13,6 +14,8 @@ export default class SubscriberCreate extends Component {
       idType: 'MyKad',
       idNumber: '',
       accountNumber: '',
+      submitting: false,
+      invalid: true,
     };
   }
 
@@ -20,38 +23,54 @@ export default class SubscriberCreate extends Component {
     this.setState({
       idType: e.target.value
     });
+    this.checkStateValidity();
   }
 
   onChangeIdNumber(e) {
     this.setState({
       idNumber: e.target.value
     });
+    this.checkStateValidity();
   }
 
   onChangeAccountNumber(e) {
     this.setState({
       accountNumber: e.target.value
     });
+    this.checkStateValidity();
   }
 
+  checkStateValidity () {
+    const accNumLength = this.state.accountNumber.trim().length;
+    if (this.state.idType 
+      && this.state.idNumber.trim()
+      && (accNumLength === 10 || accNumLength === 12)) {
+        this.setState({invalid: false});
+      } else {
+        this.setState({invalid: true});
+      }
+  }
   onSubmit(e) {
     e.preventDefault();
-    if (this.state.idNumber.length === 0 ) {return;}
-    if (this.state.accountNumber.length !== 10 && this.state.accountNumber.length !== 12) {return;}
-    console.log(this.state);
+    this.setState({ submitting: true });
     axios
-      .post("/subscribers",
+      .post("/promocodes",
         { idType: this.state.idType, idNumber: this.state.idNumber, accountNumber: this.state.accountNumber }
       ).then(res => {
+        this.setState({ submitting: false });
         console.log(res.data);
-        this.props.history.push("/subscribers");
+        alert(res.data.code);
+        this.props.history.push("/");
+      }).catch(error => {
+        console.log(error);
+        this.setState({ submitting: false });
       });
   }
 
   render() {
     return (
       <div style={{ marginTop: 10 }}>
-        <h3 align="center">Create subscriber</h3>
+        <h3 align="center">Redeem</h3>
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             <label>ID Type: *</label>
@@ -86,9 +105,19 @@ export default class SubscriberCreate extends Component {
           <div className="form-group">
             <input
               type="submit"
-              value="Create Subscriber"
+              value="Redeem Now"
               className="btn btn-primary"
+              disabled={this.state.submitting || this.state.invalid}
             />
+
+            <ClipLoader
+              style={{display: 'block', margin: '10px 0 0 20px'}}
+              sizeUnit={"px"}
+              size={40}
+              color={'#123abc'}
+              loading={this.state.submitting}
+            />
+
           </div>
         </form>
       </div>
