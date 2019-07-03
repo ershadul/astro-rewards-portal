@@ -8,15 +8,15 @@ import RedeemForm from "./components/subscriber/RedeemForm";
 
 function App() {
   return (
-    
       <div className="container">
-        <h2 style={{ marginTop: 20 }}>Rewards Portal</h2> <br />
+        <a style={{ 'text-decoration': 'none', color: 'black'}} href="/"><h2 style={{ marginTop: 20 }}>Rewards Portal</h2></a>
+        <br />
         <Router>
           
           <Switch>
             <Route exact path="/" component={RewardIndex} />
             <Route path="/reward/:id" component={RewardDetail} />
-            <Route path="/redeem" component={RedeemForm} />
+            <Route path="/redeem/:id" component={RedeemForm} />
           </Switch>
         </Router>
       </div>

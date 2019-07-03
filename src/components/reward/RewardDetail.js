@@ -87,7 +87,7 @@ class RewardDetail extends Component {
         </div>
         <div className="row mb-4">
             <div className="col-md-4">
-                <Link to={'/redeem'} className="btn btn-primary btn-block">Redeem</Link>
+                <Link to={'/redeem/' + this.state.reward._id } className="btn btn-primary btn-block">Redeem</Link>
             </div>
         </div>
       </div>

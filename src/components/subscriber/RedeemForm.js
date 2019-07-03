@@ -16,54 +16,64 @@ export default class RedeemForm extends Component {
       accountNumber: '',
       submitting: false,
       invalid: true,
+      error: '',
     };
   }
 
+  componentDidMount() {
+    this.setState({ idType: 'MyKad' });
+  }
   onChangeIdType(e) {
     this.setState({
       idType: e.target.value
     });
-    this.checkStateValidity();
+    this.checkStateValidity(e.target.value, this.state.idNumber, this.state.accountNumber);
   }
 
   onChangeIdNumber(e) {
     this.setState({
       idNumber: e.target.value
     });
-    this.checkStateValidity();
+    this.checkStateValidity(this.state.idType, e.target.value, this.state.accountNumber);
   }
 
   onChangeAccountNumber(e) {
     this.setState({
       accountNumber: e.target.value
     });
-    this.checkStateValidity();
+    this.checkStateValidity(this.state.idType, this.state.idNumber, e.target.value);
   }
 
-  checkStateValidity () {
-    const accNumLength = this.state.accountNumber.trim().length;
-    if (this.state.idType 
-      && this.state.idNumber.trim()
+  checkStateValidity (idType, idNumber, accountNumber) {
+    const accNumLength = accountNumber.trim().length;
+    if (idType 
+      && idNumber.trim()
       && (accNumLength === 10 || accNumLength === 12)) {
         this.setState({invalid: false});
       } else {
         this.setState({invalid: true});
       }
   }
+
   onSubmit(e) {
     e.preventDefault();
     this.setState({ submitting: true });
     axios
       .post("/promocodes",
-        { idType: this.state.idType, idNumber: this.state.idNumber, accountNumber: this.state.accountNumber }
-      ).then(res => {
+        {
+          idType: this.state.idType,
+          idNumber: this.state.idNumber,
+          accountNumber: this.state.accountNumber,
+          reward: this.props.match.params.id,
+        }
+      ).then((res) => {
         this.setState({ submitting: false });
         console.log(res.data);
         alert(res.data.code);
         this.props.history.push("/");
-      }).catch(error => {
-        console.log(error);
-        this.setState({ submitting: false });
+      }).catch((error) => {
+        console.log(error.response);
+        this.setState({ submitting: false, error: error.response.data.message });
       });
   }
 
@@ -71,6 +81,7 @@ export default class RedeemForm extends Component {
     return (
       <div style={{ marginTop: 10 }}>
         <h3 align="center">Redeem</h3>
+        <p style={{color: 'red'}}>{this.state.error}</p>
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             <label>ID Type: *</label>
