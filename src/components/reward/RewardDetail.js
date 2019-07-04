@@ -63,7 +63,7 @@ class RewardDetail extends Component {
               <div className="details-reward-content">
                   <div className="rewards-card-header-container mb-3">
                       <div className="hd-img">
-                          <img src={this.state.company.logo} alt={this.state.company.logo} />
+                          <img src={this.state.company.logo} alt={this.state.company.name} />
                       </div>
                       <div className="hd-header">
                           <label>{this.state.company.name}</label>

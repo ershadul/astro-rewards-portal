@@ -14,7 +14,7 @@ class RewardRow extends Component {
             <div className="item-deatils">
               <div className="rewards-card-header-container">
                 <div className="hd-img">
-                    <img src={this.props.obj.company.name} alt={this.props.obj.company.name} />
+                    <img src={this.props.obj.company.logo} alt={this.props.obj.company.name} />
                 </div>
                 <div class="hd-header">
                     <label for="">{this.props.obj.company.name}</label>
